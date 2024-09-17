@@ -14,11 +14,14 @@ const placeholderImgs = Array(7).fill(mockImages)
   .flat()
   .map((image, index) => ({...image, id: index + 1}));
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
+  const images = await db.query.images.findMany({
+    orderBy: (model, { desc }) => desc(model.id),
+  });
 
-  const posts = await db.query.posts.findMany({});
-
-  console.log(posts);
+  console.log(images);
 
   return (
     <main className="">
