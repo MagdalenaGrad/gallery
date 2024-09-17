@@ -1,17 +1,28 @@
+import { db } from '@/server/db';
+
 const urls = [
   'https://utfs.io/f/ce49e071-59a9-4a20-a9a0-8432d604fc61-herpjl.webp',
   'https://utfs.io/f/263c71df-4d87-4cca-8788-1072d9b1728c-lqwsp1.jpg',
   'https://utfs.io/f/67321a9b-575b-4421-89df-c75de24269c1-ilen2j.jpg',
 ];
 
-const mockImages = urls.map((url, index) => ({
-  id: index + 1,
+const mockImages = urls.map((url) => ({
   url,
 }));
 
-const placeholderImgs = Array(7).fill(mockImages).flat();
+const placeholderImgs = Array(7).fill(mockImages)
+  .flat()
+  .map((image, index) => ({...image, id: index + 1}));
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const images = await db.query.images.findMany({
+    orderBy: (model, { desc }) => desc(model.id),
+  });
+
+  console.log(images);
+
   return (
     <main className="">
       <div className="flex flex-wrap gap-4">
